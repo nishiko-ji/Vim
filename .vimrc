@@ -1,3 +1,5 @@
+" vimの設定ファイル
+
 set encoding=utf-8
 set fenc=utf-8
 scriptencoding utf-8
