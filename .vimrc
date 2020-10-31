@@ -1,9 +1,8 @@
-" vimの設定ファイル
-
 set encoding=utf-8
 set fenc=utf-8
 scriptencoding utf-8
 set noswapfile
+set nowritebackup
 set nobackup
 set autoread
 set hidden
@@ -117,6 +116,8 @@ set expandtab " タブ入力を複数の空白入力に置き換える
 set shiftwidth=4 " smartindentで増減する幅
 set tabstop=4 " 画面上でタブ文字が占める幅
 set softtabstop=4 " 連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
+set list  " 不可視文字を表示する
+set listchars=tab:>-,trail:.  " タブを >--- 半スペを . で表示する
 
 if has("autocmd")
   "ファイルタイプの検索を有効にする
