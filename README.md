@@ -1,0 +1,2 @@
+個人用vim設定ファイル
+rubocop, flake8は各自install
