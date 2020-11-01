@@ -1,7 +1,5 @@
 set encoding=utf-8
 set fenc=utf-8
-scriptencoding utf-8
-set noswapfile
 set nowritebackup
 set nobackup
 set autoread
@@ -30,14 +28,22 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 " インストールするVimプラグインを以下に記述
 " NeoBundle自身を管理
 NeoBundleFetch 'Shougo/neobundle.vim'
+" Unit.vim
+NeoBundle 'Shougo/unite.vim'
+" ファイルツリー
+NeoBundle 'Shougo/vimfiler'
 " カラースキームmolokai
-NeoBundle 'tomasr/molokai'
+"NeoBundle 'tomasr/molokai'
+" カラースキームmolokai
+NeoBundle 'franbach/miramare'
+" カラースキームmaterial
+"NeoBundle 'jdkanani/vim-material-theme'
 " ステータスラインの表示内容強化
 NeoBundle 'itchyny/lightline.vim'
 " インデントの可視化
 NeoBundle 'Yggdroot/indentLine'
 " 末尾の全角半角空白文字を赤くハイライト
-NeoBundle 'bronson/vim-trailing-whitespace'
+"NeoBundle 'bronson/vim-trailing-whitespace'
 " 構文エラーチェック
 NeoBundle 'scrooloose/syntastic'
 " 多機能セレクタ
@@ -72,14 +78,27 @@ filetype plugin indent on
 NeoBundleCheck
 
 "----------------------------------------------------------
+" ファイルツリー
+"----------------------------------------------------------
+let g:vimfiler_as_default_explorer = 1
+nnoremap <leader>e :VimFilerExplore -split -winwidth=30 -find -no-quit<Cr>
+
+"----------------------------------------------------------
 " カラースキーム
 "----------------------------------------------------------
-if neobundle#is_installed('molokai')
-    colorscheme molokai " カラースキームにmolokaiを設定する
-endif
+""molokai
+"if neobundle#is_installed('molokai')
+"    colorscheme molokai " カラースキームにmolokaiを設定する
+"endif
 
-set t_Co=256 " iTerm2など既に256色環境なら無くても良い
-syntax enable " 構文に色を付ける
+"set t_Co=256 " iTerm2など既に256色環境なら無くても良い
+"syntax enable " 構文に色を付ける
+
+" miramare
+set termguicolors
+let g:miramare_enable_italic = 1
+let g:miramare_disable_italic_comment = 1
+colorscheme miramare
 
 "----------------------------------------------------------
 " 文字
@@ -117,7 +136,21 @@ set shiftwidth=4 " smartindentで増減する幅
 set tabstop=4 " 画面上でタブ文字が占める幅
 set softtabstop=4 " 連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
 set list  " 不可視文字を表示する
-set listchars=tab:>-,trail:.  " タブを >--- 半スペを . で表示する
+set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲ " デフォルト不可視文字は美しくないのでUnicodeで綺麗に
+
+"全角スペースをハイライト表示
+function! ZenkakuSpace()
+    highlight ZenkakuSpace cterm=reverse ctermfg=DarkMagenta gui=reverse guifg=DarkMagenta
+endfunction
+   
+if has('syntax')
+    augroup ZenkakuSpace
+        autocmd!
+        autocmd ColorScheme       * call ZenkakuSpace()
+        autocmd VimEnter,WinEnter * match ZenkakuSpace /　/
+    augroup END
+    call ZenkakuSpace()
+endif
 
 if has("autocmd")
   "ファイルタイプの検索を有効にする
@@ -147,9 +180,16 @@ set incsearch " インクリメンタルサーチ. １文字入力毎に検索�
 set ignorecase " 検索パターンに大文字小文字を区別しない
 set smartcase " 検索パターンに大文字を含んでいたら大文字小文字を区別する
 set hlsearch " 検索結果をハイライト
-set wrapscan" 検索時に最後まで行ったら最初に戻る
-" ESCキー2度押しでハイライトの切り替え
-nnoremap <silent><Esc><Esc> :<C-u>set nohlsearch!<CR>
+set wrapscan " 検索時に最後まで行ったら最初に戻る
+nnoremap <silent><Esc><Esc> :<C-u>set nohlsearch!<CR> " ESCキー2度押しでハイライトの切り替え
+inoremap jj <Esc> " 入力モード中に素早くjjと入力した場合はESCとみなす
+" 検索後にジャンプした際に検索単語を画面中央に持ってくる
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
 
 "----------------------------------------------------------
 " カーソル
@@ -246,14 +286,12 @@ let g:syntastic_check_on_wq = 1
 " Python用. 構文エラーチェックにflake8を使用
 let g:syntastic_python_checkers=['flake8']
 " Ruby用. 構文エラーチェックにを使用
-let g:syntastic_ruby_checkers=['rubocop']
+let g:syntastic_ruby_checkers = ['rubocop']
 " Cpp用. 構文エラーチェックにを使用
 let g:syntastic_cpp_checkers=['gcc']
-" Javascript用. 構文エラーチェックにESLintを使用
-let g:syntastic_javascript_checkers=['eslint']
 " Javascript以外は構文エラーチェックをしない
 let g:syntastic_mode_map = { 'mode': 'active',
-                           \ 'active_filetypes': ['python', 'ruby', 'cpp', 'javascript'],
+                           \ 'active_filetypes': ['python','ruby' ,'cpp'],
                            \ 'passive_filetypes': [] }
 
 "----------------------------------------------------------
