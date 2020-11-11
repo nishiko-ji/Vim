@@ -155,6 +155,10 @@ function! s:syntastic()
   call lightline#update()
 endfunction
 
+let g:lightline = {
+      \ 'colorscheme': 'miramare'
+      \ }
+
 "----------------------------------------------------------
 " コマンドモード
 "----------------------------------------------------------
